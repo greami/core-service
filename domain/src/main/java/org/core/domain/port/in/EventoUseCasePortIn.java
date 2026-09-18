@@ -10,6 +10,7 @@ public interface EventoUseCasePortIn
 {
     List<EventoRecord> findAll();
     EventoRecord save(EventoRecord eventoRecord);
+    List<EventoRecord> getByNomeLike(String nomeEvento);
     Optional<EventoRecord> findByNomeAndDataAndNumeroPostiAndDurata(String nome, LocalDateTime data, Integer numeroPosti, Integer durata);
     List<EventoRecord> getByDataFilter(LocalDateTime dataInizio, LocalDateTime dataFine);
     Boolean deleteById(Integer idEvento);

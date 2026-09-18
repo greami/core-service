@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface EventoRepositoryPortOut
 {
     Optional<EventoRecord> findById(Integer id);
+    List<EventoRecord> findByNomeLike(String nomeEvento);
     Optional<EventoRecord> findByNomeAndDataAndNumeroPostiAndDurata(String nome, LocalDateTime data, Integer numeroPosti, Integer durata);
     EventoRecord save(EventoRecord evento);
     List<EventoRecord> getByDataFilter(LocalDateTime dataInizio, LocalDateTime dataFine);

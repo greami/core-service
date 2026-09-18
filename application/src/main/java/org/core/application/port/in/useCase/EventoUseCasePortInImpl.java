@@ -5,7 +5,6 @@ import org.core.domain.model.EventoRecord;
 import org.core.domain.port.in.EventoUseCasePortIn;
 import org.core.domain.port.out.EventoRepositoryPortOut;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,6 +21,11 @@ public class EventoUseCasePortInImpl implements EventoUseCasePortIn
     @Override
     public List<EventoRecord> findAll() {
         return eventoRepository.findAll();
+    }
+
+    @Override
+    public List<EventoRecord> getByNomeLike(String nomeEvento) {
+        return eventoRepository.findByNomeLike(nomeEvento);
     }
 
     @Override

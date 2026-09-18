@@ -36,6 +36,15 @@ public class EventoController implements EventiApi {
     }
 
     @Override
+    public ResponseEntity<List<Evento>> cercaEventoByNome(String nomeEvento) {
+        return ResponseEntity.ok(
+                eventoUseCasePortIn.getByNomeLike(nomeEvento).stream()
+                        .map(eventoMapper::toEvento)
+                        .toList()
+        );
+    }
+
+    @Override
     public ResponseEntity<Evento> creaEvento(CreaEventoRequest creaEventoRequest) {
         EventoRecord evento = eventoUseCasePortIn.save(
                 new EventoRecord(

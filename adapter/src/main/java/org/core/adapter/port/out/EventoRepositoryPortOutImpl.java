@@ -35,6 +35,19 @@ public class EventoRepositoryPortOutImpl implements EventoRepositoryPortOut {
     }
 
     @Override
+    public List<EventoRecord> findByNomeLike(String nomeEvento) {
+        return jpaEventoRepository.findByNomeContainingIgnoreCase(nomeEvento).stream()
+                .map(entity -> new EventoRecord(
+                        entity.getId(),
+                        entity.getNome(),
+                        entity.getNumeroPosti(),
+                        entity.getData(),
+                        entity.getDurata()
+                ))
+                .toList();
+    }
+
+    @Override
     public Optional<EventoRecord> findByNomeAndDataAndNumeroPostiAndDurata(String nome, LocalDateTime data, Integer numeroPosti, Integer durata) {
         return jpaEventoRepository.findByNomeAndDataAndNumeroPostiAndDurata(nome, data, numeroPosti, durata)
                .map(entity -> new EventoRecord(
