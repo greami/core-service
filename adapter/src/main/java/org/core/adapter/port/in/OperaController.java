@@ -36,6 +36,27 @@ public class OperaController implements OpereApi {
     }
 
     @Override
+    public ResponseEntity<List<Opera>> cercaOpereByIdEvento(Integer idEvento) {
+        return ResponseEntity.ok(operaUseCasePortIn.findByEvento(idEvento).stream()
+                .map(operaMapper::toOpera)
+                .toList());
+    }
+
+    @Override
+    public ResponseEntity<List<Opera>> cercaOpereByNome(String nomeOpera) {
+        return ResponseEntity.ok(operaUseCasePortIn.getByNomeLike(nomeOpera).stream()
+                .map(operaMapper::toOpera)
+                .toList());
+    }
+
+    @Override
+    public ResponseEntity<List<Opera>> cercaOpereByAutore(String autoreOpera) {
+        return ResponseEntity.ok(operaUseCasePortIn.getByAutoreLike(autoreOpera).stream()
+                .map(operaMapper::toOpera)
+                .toList());
+    }
+
+    @Override
     public ResponseEntity<Opera> creaOpera(CreaOperaRequest creaOperaRequest) {
         OperaRecord operaRecord = operaUseCasePortIn.save(
                 new OperaRecord(null,

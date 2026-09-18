@@ -163,6 +163,57 @@ paths:
               schema:
                 $ref: '#/components/schemas/Opera'
 
+  /opere/by-evento/{idEvento}:
+    get:
+      tags: [Opere]
+      operationId: cercaOpereByIdEvento
+      summary: Cerca tutte le opere collegate a un evento
+      parameters:
+        - $ref: '#/components/parameters/idEvento'
+      responses:
+        '200':
+          description: Elenco opere collegate a un evento
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Opera'
+
+  /opere/by-nome/{nomeOpera}:
+    get:
+      tags: [Opere]
+      operationId: cercaOpereByNome
+      summary: Cerca opere per nome
+      parameters:
+        - $ref: '#/components/parameters/nomeOpera'
+      responses:
+        '200':
+          description: Elenco opere trovate per nome
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Opera'
+
+  /opere/by-autore/{autoreOpera}:
+    get:
+      tags: [Opere]
+      operationId: cercaOpereByAutore
+      summary: Cerca opere per autore
+      parameters:
+        - $ref: '#/components/parameters/autoreOpera'
+      responses:
+        '200':
+          description: Elenco opere trovate per autore
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Opera'
+
   /opere/{idOpera}:
     delete:
       tags: [Opere]
@@ -600,6 +651,20 @@ components:
       schema:
         $ref: '#/components/schemas/IdOpera'
       example: 123456790
+
+    nomeOpera:
+      name: nomeOpera
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/NomeOpera'
+
+    autoreOpera:
+      name: autoreOpera
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/AutoreOpera'
 
     idFeedback:
       name: idFeedback

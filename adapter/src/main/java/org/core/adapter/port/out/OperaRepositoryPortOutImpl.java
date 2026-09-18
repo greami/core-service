@@ -34,6 +34,27 @@ public class OperaRepositoryPortOutImpl implements OperaRepositoryPortOut {
     }
 
     @Override
+    public List<OperaRecord> findByEvento(Integer idEvento) {
+        return jpaOperaRepository.findByIdEvento(idEvento).stream()
+                .map(operaMapper::toOperaRecord)
+                .toList();
+    }
+
+    @Override
+    public List<OperaRecord> findByNomeLike(String nomeOpera) {
+        return jpaOperaRepository.findByNomeContainingIgnoreCase(nomeOpera).stream()
+                .map(operaMapper::toOperaRecord)
+                .toList();
+    }
+
+    @Override
+    public List<OperaRecord> findByAutoreLike(String autoreOpera) {
+        return jpaOperaRepository.findByAutoreContainingIgnoreCase(autoreOpera).stream()
+                .map(operaMapper::toOperaRecord)
+                .toList();
+    }
+
+    @Override
     public OperaRecord save(OperaRecord opera) {
         try {
             OperaEntity saved = jpaOperaRepository.save(operaMapper.toOperaEntity(opera));

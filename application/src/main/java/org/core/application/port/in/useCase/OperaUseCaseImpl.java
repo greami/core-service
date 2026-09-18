@@ -28,6 +28,21 @@ public class OperaUseCaseImpl implements OperaUseCasePortIn {
     }
 
     @Override
+    public List<OperaRecord> findByEvento(Integer idEvento) {
+        return operaRepository.findByEvento(idEvento);
+    }
+
+    @Override
+    public List<OperaRecord> getByNomeLike(String nomeOpera) {
+        return operaRepository.findByNomeLike(nomeOpera);
+    }
+
+    @Override
+    public List<OperaRecord> getByAutoreLike(String autoreOpera) {
+        return operaRepository.findByAutoreLike(autoreOpera);
+    }
+
+    @Override
     public OperaRecord save(OperaRecord opera) {
         Optional<OperaRecord> existing = operaRepository.findByNomeAndAutoreAndTipo(opera.nome(), opera.autore(), opera.tipo());
         if (existing.isPresent()) {
