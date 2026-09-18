@@ -8,6 +8,7 @@ import org.core.domain.port.out.PrenotazioneRepositoryPortOut;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,6 +70,20 @@ public class PrenotazioneRepositoryPortOutImpl implements PrenotazioneRepository
     @Override
     public List<PrenotazioneRecord> findAll() {
         return jpaPrenotazioneRepository.findAll().stream()
+                .map(entity -> new PrenotazioneRecord(
+                        entity.getId(),
+                        entity.getIdUtente(),
+                        entity.getIdEvento(),
+                        entity.getNumeroPosti(),
+                        entity.getDataPrenotazione(),
+                        entity.getDataModifica()
+                ))
+                .toList();
+    }
+
+    @Override
+    public List<PrenotazioneRecord> getByDataFilter(LocalDateTime dataInizio, LocalDateTime dataFine) {
+        return jpaPrenotazioneRepository.findByDataPrenotazioneBetween(dataInizio, dataFine).stream()
                 .map(entity -> new PrenotazioneRecord(
                         entity.getId(),
                         entity.getIdUtente(),

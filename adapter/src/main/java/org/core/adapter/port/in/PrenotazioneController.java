@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,6 +47,14 @@ public class PrenotazioneController  implements PrenotazioniApi
     }
 
     @Override
+    public ResponseEntity<List<Prenotazione>> prenotazioniByData(LocalDateTime dataInizio, LocalDateTime dataFine) {
+        List<Prenotazione> prenotazioni = prenotazioneUseCasePortIn.getByDataFilter(dataInizio, dataFine).stream()
+                .map(prenotazioneMapper::toPrenotazione)
+                .toList();
+        return ResponseEntity.ok(prenotazioni);
+    }
+
+    @Override
     public ResponseEntity<List<Prenotazione>> cercaPrenotazioniPerEvento(Integer idEvento) {
 
         //var listByIdEvento = prenotazioneRepositoryPortOut.findByEvento(idEvento).stream()
@@ -69,7 +78,7 @@ public class PrenotazioneController  implements PrenotazioniApi
                 .flatMap(prenotazione -> prenotazione != null ? List.of(prenotazione).stream() : List.<Prenotazione>of().stream())
                 .toList();
 
-        return prenotazioniEvento.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok(prenotazioniEvento);
+        return prenotazioniEvento.isEmpty() ? ResponseEntity.ok(new ArrayList<>()) : ResponseEntity.ok(prenotazioniEvento);
     }
 
     @Override
