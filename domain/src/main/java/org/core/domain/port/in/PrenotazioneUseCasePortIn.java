@@ -1,6 +1,7 @@
 package org.core.domain.port.in;
 
 import org.core.domain.model.PrenotazioneRecord;
+import org.core.domain.model.PrenotazioniDisponibiliEventoRecord;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,5 +18,6 @@ public interface PrenotazioneUseCasePortIn
     Boolean updateById(Integer id, Integer numeroPosti);
     List<PrenotazioneRecord> findByEvento(Integer id);
     List<PrenotazioneRecord> findByUtente(Integer id);
+    Optional<PrenotazioniDisponibiliEventoRecord> getPostiDisponibiliByIdEvento(Integer idEvento);
 
 }

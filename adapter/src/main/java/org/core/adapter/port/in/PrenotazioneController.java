@@ -5,6 +5,7 @@ import org.openapitools.api.PrenotazioniApi;
 import org.openapitools.model.CreaPrenotazioneRequest;
 import org.openapitools.model.ModificaPrenotazioneRequest;
 import org.openapitools.model.Prenotazione;
+import org.openapitools.model.PrenotazioniDisponibiliEvento;
 import org.core.adapter.mapper.PrenotazioneMapper;
 import org.core.domain.model.PrenotazioneRecord;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,5 +119,18 @@ public class PrenotazioneController  implements PrenotazioniApi
                 .toList();
 
         return ResponseEntity.ok(prenotazioniUtente);
+    }
+
+    @Override
+    public ResponseEntity<PrenotazioniDisponibiliEvento> cercaPrenotazioniDisponibiliPerEvento(Integer idEvento) {
+        return prenotazioneUseCasePortIn.getPostiDisponibiliByIdEvento(idEvento)
+                .map(disponibilita -> {
+                    PrenotazioniDisponibiliEvento response = new PrenotazioniDisponibiliEvento();
+                    response.setIdEvento(disponibilita.idEvento());
+                    response.setNumeroPostiTotali(disponibilita.numeroPostiTotali());
+                    response.setNumeroPostiDispobili(disponibilita.numeroPostiDisponibili());
+                    return ResponseEntity.ok(response);
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 }
