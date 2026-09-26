@@ -84,6 +84,14 @@ public class PrenotazioneController  implements PrenotazioniApi
 
     @Override
     public ResponseEntity<Prenotazione> creaPrenotazione(CreaPrenotazioneRequest creaPrenotazioneRequest) {
+        var disponibilita = prenotazioneUseCasePortIn.getPostiDisponibiliByIdEvento(creaPrenotazioneRequest.getIdEvento());
+        if (disponibilita.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (creaPrenotazioneRequest.getNumeroPartecipanti() > disponibilita.get().numeroPostiDisponibili()) {
+            return ResponseEntity.badRequest().build();
+        }
 
         PrenotazioneRecord prenotazioneRecord = prenotazioneUseCasePortIn.save(
                 new PrenotazioneRecord(null,
@@ -107,8 +115,24 @@ public class PrenotazioneController  implements PrenotazioniApi
 
     @Override
     public ResponseEntity<Void> modificaPrenotazione(Integer idPrenotazione, ModificaPrenotazioneRequest modificaPrenotazioneRequest) {
+        var prenotazioneEsistente = prenotazioneUseCasePortIn.findById(idPrenotazione);
+        if (prenotazioneEsistente.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
-        return prenotazioneUseCasePortIn.updateById(idPrenotazione, modificaPrenotazioneRequest.getNumeroPartecipanti()) ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
+        var disponibilita = prenotazioneUseCasePortIn.getPostiDisponibiliByIdEvento(prenotazioneEsistente.get().idEvento());
+        if (disponibilita.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        int postiMassimiPrenotabili = disponibilita.get().numeroPostiDisponibili() + prenotazioneEsistente.get().numeroPosti();
+        if (modificaPrenotazioneRequest.getNumeroPartecipanti() > postiMassimiPrenotabili) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return prenotazioneUseCasePortIn.updateById(idPrenotazione, modificaPrenotazioneRequest.getNumeroPartecipanti())
+                ? ResponseEntity.ok().build()
+                : ResponseEntity.badRequest().build();
     }
 
     @Override
