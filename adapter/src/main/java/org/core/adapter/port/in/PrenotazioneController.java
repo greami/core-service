@@ -16,7 +16,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @RestController
 public class PrenotazioneController  implements PrenotazioniApi
@@ -85,26 +84,6 @@ public class PrenotazioneController  implements PrenotazioniApi
 
     @Override
     public ResponseEntity<Prenotazione> creaPrenotazione(CreaPrenotazioneRequest creaPrenotazioneRequest) {
-        Optional<PrenotazioniDisponibiliEvento> disponibilitaEvento = prenotazioneUseCasePortIn
-                .getPostiDisponibiliByIdEvento(creaPrenotazioneRequest.getIdEvento())
-                .map(disponibilita -> {
-                    PrenotazioniDisponibiliEvento response = new PrenotazioniDisponibiliEvento();
-                    response.setIdEvento(disponibilita.idEvento());
-                    response.setNumeroPostiTotali(disponibilita.numeroPostiTotali());
-                    response.setNumeroPostiDispobili(disponibilita.numeroPostiDisponibili());
-                    return response;
-                });
-
-        if (disponibilitaEvento.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-
-        int postiDisponibili = disponibilitaEvento.get().getNumeroPostiDispobili();
-
-        if (creaPrenotazioneRequest.getNumeroPartecipanti() > postiDisponibili) {
-            return ResponseEntity.badRequest().build();
-        }
 
         PrenotazioneRecord prenotazioneRecord = prenotazioneUseCasePortIn.save(
                 new PrenotazioneRecord(null,
@@ -117,36 +96,17 @@ public class PrenotazioneController  implements PrenotazioniApi
             return ResponseEntity.badRequest().build();
         }
 
-        return ResponseEntity.status(201).body(prenotazioneMapper.toPrenotazione(prenotazioneRecord));
+        boolean duplicate = Objects.equals(prenotazioneRecord.idUtente(), creaPrenotazioneRequest.getIdUtente())
+                && Objects.equals(prenotazioneRecord.idEvento(), creaPrenotazioneRequest.getIdEvento())
+                && Objects.equals(prenotazioneRecord.numeroPosti(), creaPrenotazioneRequest.getNumeroPartecipanti());
+
+        return duplicate
+                ? ResponseEntity.ok(prenotazioneMapper.toPrenotazione(prenotazioneRecord))
+                : ResponseEntity.status(201).body(prenotazioneMapper.toPrenotazione(prenotazioneRecord));
    }
 
     @Override
     public ResponseEntity<Void> modificaPrenotazione(Integer idPrenotazione, ModificaPrenotazioneRequest modificaPrenotazioneRequest) {
-        Optional<PrenotazioneRecord> prenotazioneEsistente = prenotazioneUseCasePortIn.findById(idPrenotazione);
-        if (prenotazioneEsistente.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Optional<PrenotazioniDisponibiliEvento> disponibilitaEvento = prenotazioneUseCasePortIn
-                .getPostiDisponibiliByIdEvento(prenotazioneEsistente.get().idEvento())
-                .map(disponibilita -> {
-                    PrenotazioniDisponibiliEvento response = new PrenotazioniDisponibiliEvento();
-                    response.setIdEvento(disponibilita.idEvento());
-                    response.setNumeroPostiTotali(disponibilita.numeroPostiTotali());
-                    response.setNumeroPostiDispobili(disponibilita.numeroPostiDisponibili());
-                    return response;
-                });
-
-        if (disponibilitaEvento.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        int postiDisponibili = disponibilitaEvento.get().getNumeroPostiDispobili()
-                + prenotazioneEsistente.get().numeroPosti();
-
-        if (modificaPrenotazioneRequest.getNumeroPartecipanti() > postiDisponibili) {
-            return ResponseEntity.badRequest().build();
-        }
 
         return prenotazioneUseCasePortIn.updateById(idPrenotazione, modificaPrenotazioneRequest.getNumeroPartecipanti()) ? ResponseEntity.ok().build() : ResponseEntity.badRequest().build();
     }
