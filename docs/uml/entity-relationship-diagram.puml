@@ -1,0 +1,80 @@
+@startuml
+title Core Service - diagramma Entita-Relazione
+hide circle
+skinparam linetype ortho
+skinparam shadowing false
+
+entity "EVENTI" as EVENTI {
+  * ID : BIGINT <<PK, AUTO_INCREMENT (start 5000)>>
+  --
+  NOME : VARCHAR(255) <<NOT NULL>>
+  NUMEROPOSTI : INT <<NOT NULL>>
+  DATA : DATETIME <<NOT NULL>>
+  DURATA : BIGINT <<NOT NULL>>
+}
+
+entity "PRENOTAZIONI" as PRENOTAZIONI {
+  * ID : BIGINT <<PK, AUTO_INCREMENT (start 5000)>>
+  --
+  IDUTENTE : BIGINT <<NOT NULL>>
+  IDEVENTO : BIGINT <<FK, NOT NULL>>
+  NUMEROPOSTI : INT <<NOT NULL>>
+  DATAPRENOTAZIONE : DATETIME <<NOT NULL>>
+  DATAMODIFICA : DATETIME <<NOT NULL>>
+}
+
+entity "OPERE" as OPERE {
+  * ID : BIGINT <<PK, AUTO_INCREMENT (start 5000)>>
+  --
+  NOME : VARCHAR(255) <<NOT NULL>>
+  AUTORE : VARCHAR(255) <<NOT NULL>>
+  TIPO : BIGINT <<NOT NULL>>
+}
+
+entity "EVENTO_OPERA" as EVENTO_OPERA {
+  * IDEVENTO : BIGINT <<PK, FK>>
+  * IDOPERA : BIGINT <<PK, FK>>
+}
+
+entity "FEEDBACK_EVENTI" as FEEDBACK_EVENTI {
+  * ID : BIGINT <<PK, AUTO_INCREMENT (start 5000)>>
+  --
+  IDUTENTE : BIGINT <<NOT NULL>>
+  IDEVENTO : BIGINT <<FK, NOT NULL>>
+  VOTO : BIGINT <<NOT NULL>>
+  NOTE : VARCHAR(255) <<NOT NULL>>
+}
+
+entity "FEEDBACK_OPERE" as FEEDBACK_OPERE {
+  * ID : BIGINT <<PK, AUTO_INCREMENT (start 5000)>>
+  --
+  IDUTENTE : BIGINT <<NOT NULL>>
+  IDOPERA : BIGINT <<FK, NOT NULL>>
+  VOTO : BIGINT <<NOT NULL>>
+  NOTE : VARCHAR(255) <<NOT NULL>>
+}
+
+EVENTI ||--o{ PRENOTAZIONI : IDEVENTO
+EVENTI ||--o{ EVENTO_OPERA : IDEVENTO
+OPERE ||--o{ EVENTO_OPERA : IDOPERA
+EVENTI ||--o{ FEEDBACK_EVENTI : IDEVENTO
+OPERE ||--o{ FEEDBACK_OPERE : IDOPERA
+
+
+
+note bottom of FEEDBACK_OPERE
+  Vincolo UNIQUE (IDUTENTE, IDOPERA).
+end note
+
+note right of EVENTI
+  ID e' AUTO_INCREMENT con valore iniziale 5000.
+end note
+
+
+
+note bottom of EVENTO_OPERA
+  Tabella associativa con PK composta
+  (IDEVENTO, IDOPERA).
+  IDEVENTO usa ON DELETE CASCADE.
+end note
+@enduml

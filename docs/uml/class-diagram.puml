@@ -1,0 +1,142 @@
+@startuml
+title Core Service - diagramma delle classi
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+package "Adapter REST" {
+  class EventoController
+  class OperaController
+  class PrenotazioneController
+  class EventoOperaController
+  class FeedbackEventiController
+  class FeedbackOpereController
+}
+
+package "Application" {
+  class EventoUseCasePortInImpl
+  class OperaUseCaseImpl
+  class PrenotazioneUseCaseImpl
+  class EventoOperaUseCaseImpl
+  class FeedbackEventiUseCaseImpl
+  class FeedbackOpereUseCaseImpl
+}
+
+package "Domain - porte in ingresso" {
+  interface EventoUseCasePortIn
+  interface OperaUseCasePortIn
+  interface PrenotazioneUseCasePortIn
+  interface EventoOperaUseCasePortIn
+  interface FeedbackEventiUseCasePortIn
+  interface FeedbackOpereUseCasePortIn
+}
+
+package "Domain - porte in uscita" {
+  interface EventoRepositoryPortOut
+  interface OperaRepositoryPortOut
+  interface PrenotazioneRepositoryPortOut
+  interface EventoOperaRepositoryPortOut
+  interface FeedbackEventiRepositoryPortOut
+  interface FeedbackOpereRepositoryPortOut
+}
+
+package "Adapter persistence" {
+  class EventoRepositoryPortOutImpl
+  class OperaRepositoryPortOutImpl
+  class PrenotazioneRepositoryPortOutImpl
+  class EventoOperaRepositoryPortOutImpl
+  class FeedbackEventiRepositoryPortOutImpl
+  class FeedbackOpereRepositoryPortOutImpl
+
+  interface JpaEventoRepository
+  interface JpaOperaRepository
+  interface JpaPrenotazioneRepository
+  interface JpaEventoOperaRepository
+  interface JpaFeedbackEventiRepository
+  interface JpaFeedbackOpereRepository
+}
+
+package "Adapter mapper" {
+  class EventoMapper
+  class OperaMapper
+  class PrenotazioneMapper
+  class EventoOperaMapper
+  class FeedbackEventiMapper
+  class FeedbackOpereMapper
+}
+
+package "Domain - modelli" {
+  class EventoRecord <<record>>
+  class OperaRecord <<record>>
+  class PrenotazioneRecord <<record>>
+  class PrenotazioniDisponibiliEventoRecord <<record>>
+  class EventoOperaRecord <<record>>
+  class FeedbackEventiRecord <<record>>
+  class FeedbackOpereRecord <<record>>
+}
+
+EventoController --> EventoUseCasePortIn
+EventoController --> EventoMapper
+OperaController --> OperaUseCasePortIn
+OperaController --> OperaMapper
+PrenotazioneController --> PrenotazioneUseCasePortIn
+PrenotazioneController --> PrenotazioneMapper
+EventoOperaController --> EventoOperaUseCasePortIn
+EventoOperaController --> EventoOperaMapper
+FeedbackEventiController --> FeedbackEventiUseCasePortIn
+FeedbackEventiController --> FeedbackEventiMapper
+FeedbackOpereController --> FeedbackOpereUseCasePortIn
+FeedbackOpereController --> FeedbackOpereMapper
+
+EventoUseCasePortInImpl ..|> EventoUseCasePortIn
+OperaUseCaseImpl ..|> OperaUseCasePortIn
+PrenotazioneUseCaseImpl ..|> PrenotazioneUseCasePortIn
+EventoOperaUseCaseImpl ..|> EventoOperaUseCasePortIn
+FeedbackEventiUseCaseImpl ..|> FeedbackEventiUseCasePortIn
+FeedbackOpereUseCaseImpl ..|> FeedbackOpereUseCasePortIn
+
+EventoUseCasePortInImpl --> EventoRepositoryPortOut
+OperaUseCaseImpl --> OperaRepositoryPortOut
+PrenotazioneUseCaseImpl --> PrenotazioneRepositoryPortOut
+PrenotazioneUseCaseImpl --> EventoUseCasePortIn : legge capienza evento
+EventoOperaUseCaseImpl --> EventoOperaRepositoryPortOut
+FeedbackEventiUseCaseImpl --> FeedbackEventiRepositoryPortOut
+FeedbackOpereUseCaseImpl --> FeedbackOpereRepositoryPortOut
+
+EventoRepositoryPortOutImpl ..|> EventoRepositoryPortOut
+OperaRepositoryPortOutImpl ..|> OperaRepositoryPortOut
+PrenotazioneRepositoryPortOutImpl ..|> PrenotazioneRepositoryPortOut
+EventoOperaRepositoryPortOutImpl ..|> EventoOperaRepositoryPortOut
+FeedbackEventiRepositoryPortOutImpl ..|> FeedbackEventiRepositoryPortOut
+FeedbackOpereRepositoryPortOutImpl ..|> FeedbackOpereRepositoryPortOut
+
+EventoRepositoryPortOutImpl --> JpaEventoRepository
+OperaRepositoryPortOutImpl --> JpaOperaRepository
+PrenotazioneRepositoryPortOutImpl --> JpaPrenotazioneRepository
+EventoOperaRepositoryPortOutImpl --> JpaEventoOperaRepository
+FeedbackEventiRepositoryPortOutImpl --> JpaFeedbackEventiRepository
+FeedbackOpereRepositoryPortOutImpl --> JpaFeedbackOpereRepository
+
+EventoRepositoryPortOutImpl --> EventoMapper
+OperaRepositoryPortOutImpl --> OperaMapper
+PrenotazioneRepositoryPortOutImpl --> PrenotazioneMapper
+EventoOperaRepositoryPortOutImpl --> EventoOperaMapper
+FeedbackEventiRepositoryPortOutImpl --> FeedbackEventiMapper
+FeedbackOpereRepositoryPortOutImpl --> FeedbackOpereMapper
+
+EventoUseCasePortIn ..> EventoRecord
+OperaUseCasePortIn ..> OperaRecord
+PrenotazioneUseCasePortIn ..> PrenotazioneRecord
+PrenotazioneUseCasePortIn ..> PrenotazioniDisponibiliEventoRecord
+EventoOperaUseCasePortIn ..> EventoOperaRecord
+FeedbackEventiUseCasePortIn ..> FeedbackEventiRecord
+FeedbackOpereUseCasePortIn ..> FeedbackOpereRecord
+
+EventoRecord "1" .. "0..*" PrenotazioneRecord : idEvento
+EventoRecord "1" .. "0..*" FeedbackEventiRecord : idEvento
+OperaRecord "1" .. "0..*" FeedbackOpereRecord : idOpera
+EventoRecord "1" .. "0..*" EventoOperaRecord : idEvento
+OperaRecord "1" .. "0..*" EventoOperaRecord : idOpera
+
+
+@enduml

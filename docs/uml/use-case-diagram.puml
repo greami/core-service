@@ -1,0 +1,121 @@
+@startuml
+title Core Service - diagramma dei casi d'uso
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+
+actor "Client REST" as Client
+
+rectangle "Core Service API" {
+  package "Eventi" {
+    usecase "Creare evento" as UC_CreateEvent
+    usecase "Elencare eventi" as UC_ListEvents
+    usecase "Cercare evento per ID" as UC_GetEvent
+    usecase "Cercare eventi per nome" as UC_SearchEvents
+    usecase "Filtrare eventi per data" as UC_FilterEvents
+    usecase "Modificare evento" as UC_UpdateEvent
+    usecase "Cancellare evento" as UC_DeleteEvent
+  }
+
+  package "Opere" {
+    usecase "Creare opera" as UC_CreateWork
+    usecase "Elencare opere" as UC_ListWorks
+    usecase "Cancellare opera" as UC_DeleteWork
+    usecase "Cercare opera per ID" as UC_GetWork
+    usecase "Cercare opere per evento" as UC_WorksByEvent
+    usecase "Cercare opere per nome" as UC_WorksByName
+    usecase "Cercare opere per autore" as UC_WorksByAuthor
+    usecase "Modificare opera" as UC_UpdateWork
+  }
+
+  package "Associazione evento-opera" {
+    usecase "Associare opera a evento" as UC_LinkWork
+    usecase "Cercare associazione per ID" as UC_GetLink
+    usecase "Elencare opere di un evento" as UC_WorksOfEvent
+    usecase "Elencare eventi di un'opera" as UC_EventsOfWork
+    usecase "Modificare associazione" as UC_UpdateLink
+    usecase "Rimuovere associazione" as UC_DeleteLink
+  }
+
+  package "Prenotazioni" {
+    usecase "Creare prenotazione" as UC_CreateBooking
+    usecase "Cercare prenotazione per ID" as UC_GetBooking
+    usecase "Elencare prenotazioni per evento" as UC_BookingsByEvent
+    usecase "Elencare prenotazioni per utente" as UC_BookingsByUser
+    usecase "Filtrare prenotazioni per data" as UC_FilterBookings
+    usecase "Verificare posti disponibili" as UC_Availability
+    usecase "Modificare prenotazione" as UC_UpdateBooking
+    usecase "Cancellare prenotazione" as UC_DeleteBooking
+  }
+
+  package "Feedback eventi" {
+    usecase "Inviare feedback su evento" as UC_CreateEventFeedback
+    usecase "Cercare feedback evento per ID" as UC_GetEventFeedback
+    usecase "Elencare feedback eventi per utente" as UC_EventFeedbackByUser
+    usecase "Elencare feedback per evento" as UC_EventFeedbackByEvent
+    usecase "Modificare feedback evento" as UC_UpdateEventFeedback
+    usecase "Cancellare feedback evento" as UC_DeleteEventFeedback
+  }
+
+  package "Feedback opere" {
+    usecase "Inviare feedback su opera" as UC_CreateWorkFeedback
+    usecase "Cercare feedback opera per ID" as UC_GetWorkFeedback
+    usecase "Elencare feedback opere per utente" as UC_WorkFeedbackByUser
+    usecase "Elencare feedback per opera" as UC_WorkFeedbackByWork
+    usecase "Modificare feedback opera" as UC_UpdateWorkFeedback
+    usecase "Cancellare feedback opera" as UC_DeleteWorkFeedback
+  }
+}
+
+Client --> UC_CreateEvent
+Client --> UC_ListEvents
+Client --> UC_GetEvent
+Client --> UC_SearchEvents
+Client --> UC_FilterEvents
+Client --> UC_UpdateEvent
+Client --> UC_DeleteEvent
+Client --> UC_CreateWork
+Client --> UC_ListWorks
+Client --> UC_DeleteWork
+Client --> UC_GetWork
+Client --> UC_WorksByEvent
+Client --> UC_WorksByName
+Client --> UC_WorksByAuthor
+Client --> UC_UpdateWork
+Client --> UC_LinkWork
+Client --> UC_GetLink
+Client --> UC_WorksOfEvent
+Client --> UC_EventsOfWork
+Client --> UC_UpdateLink
+Client --> UC_DeleteLink
+Client --> UC_CreateBooking
+Client --> UC_GetBooking
+Client --> UC_BookingsByEvent
+Client --> UC_BookingsByUser
+Client --> UC_FilterBookings
+Client --> UC_Availability
+Client --> UC_UpdateBooking
+Client --> UC_DeleteBooking
+Client --> UC_CreateEventFeedback
+Client --> UC_GetEventFeedback
+Client --> UC_EventFeedbackByUser
+Client --> UC_EventFeedbackByEvent
+Client --> UC_UpdateEventFeedback
+Client --> UC_DeleteEventFeedback
+Client --> UC_CreateWorkFeedback
+Client --> UC_GetWorkFeedback
+Client --> UC_WorkFeedbackByUser
+Client --> UC_WorkFeedbackByWork
+Client --> UC_UpdateWorkFeedback
+Client --> UC_DeleteWorkFeedback
+
+note right of UC_CreateBooking
+  La creazione verifica che l'evento esista
+  e che i posti richiesti siano disponibili.
+end note
+
+note right of UC_UpdateBooking
+  La modifica controlla la disponibilità
+  residua dell'evento.
+end note
+@enduml
